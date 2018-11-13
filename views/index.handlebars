@@ -1,0 +1,39 @@
+<style media="screen">
+    li {
+    height : 100px;
+    width: 200px;
+    margin-bottom: 30px;
+  }
+</style>
+
+<h1>Lunches for {{eater}}</h1>
+
+<ul>
+    {{#each foods }}
+    <li>{{this}}</li>
+    {{/each}}
+</ul>
+
+<p>Burger: <input id="input-button" type="text"><br></p>
+<button onclick="buttonFunc()" type="submit" class="btn btn-primary submit">Submit</button>
+
+<script>
+    function buttonFunc() {
+        const buttonInput = {};
+        buttonInput["string"] = document.getElementById("input-button").value;
+        //        console.log("buttonFunc: ", buttonInput);
+        var opts = {
+            method: 'POST',
+            body: JSON.stringify(buttonInput),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+        fetch('/choices/submit', opts).then(function (response) {
+            return response.json();
+        })
+            .then(function (body) {
+                let x = 1;
+            });
+    }
+</script>
