@@ -8,7 +8,7 @@ var exphbs = require("express-handlebars");
 //var sqlCon = require('./config/connection')(app);
 
 var app = express();
-app.use (express.json());
+app.use(express.json());
 var PORT = process.env.PORT || 3000;
 
 //const ormCon = require ('./config/orm');
@@ -55,6 +55,22 @@ app.engine("handlebars", exphbs({
 }));
 app.set("view engine", "handlebars");
 
+app.get("/index", function (req, res) {
+    con.query("SELECT * FROM burgers", function (err, result) {
+        if (err) throw err;
+        let burgerData = [];
+        result.forEach(function (thisOne, i) {
+            burgerData.push(thisOne.burger_name);
+        });
+        console.log("bD: ", burgerData);
+        res.render("index", {
+            eater: "Roger",
+            foods: burgerData
+        });
+    });
+    //    res.render("index", {});
+});
+
 app.get("/burgers", function (req, res) {
     // the following should be in orm.js, but I had no success putting it there.
     con.query("SELECT * FROM burgers", function (err, result) {
@@ -71,20 +87,39 @@ app.get("/burgers", function (req, res) {
     });
 });
 
-var burgerForList;
+var burgerForList = [];
+var eatenList = [];
 
 app.get("/choices", function (req, res) {
-    console.log ("GET request to the choices page");
+    console.log("GET request to the choices page");
+    console.log("get: ", burgerForList);
     res.render("index", {
-        burgerWanted: burgerForList
+        eater: "Roger",
+        foods: burgerForList,
+        eaten: eatenList
     });
     console.log(burgerForList);
 });
 
 
 app.post('/choices/submit', function (req, res) {
-    console.log ('POST request to the choices page');
-    console.log (req.body);         // correctly prints a string (burger wanted) inserted in there
-    res.send('POST request to the choices page');
+    burgerForList.push(req.body.string);
+    res.render("index", {
+        foods: burgerForList,
+        eaten: eatenList
+    });
+    return;
 });
 
+app.post('/choices/devour', function (req, res) {
+    eatenList.push(req.body.string);
+    let found = burgerForList.indexOf (req.body.string);
+    if (found >= 0) {
+        burgerForList.splice(found, 1);
+    }
+    res.render("index", {
+        foods: burgerForList,
+        eaten: eatenList
+    });
+    return;
+});

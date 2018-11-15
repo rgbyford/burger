@@ -1,27 +1,66 @@
 <style media="screen">
+    .lined-up {
+        margin-left: 20px;
+    }
     li {
-    height : 100px;
-    width: 200px;
-    margin-bottom: 30px;
+    height : 20px;
+    width: 100px;
+    margin-bottom: 5px;
+    margin-right: 30px;
   }
+  h1 {text-align: center;}
+  .middle {
+    margin-left: 40%;
+    width: 20%;
+    padding: 10px;
+}
 </style>
 
-<h1>Lunches for {{eater}}</h1>
+<h1>Eat-Da-Burger!</h1>
+
+<div class="middle">
+    <p>What would you like?</p>
+    <input id="input-button" type="text"><br><br>
+    <button onclick="buttonFunc()" class="btn btn-primary submit">Submit</button>
+</div>
 
 <ul>
     {{#each foods }}
-    <li>{{this}}</li>
+    <li style="list-style-type:none; float: left" class="lined-up">{{@index}}:  {{this}}</li>
+    <button style="float: left" style="display: inline" id={{this}} , onclick="devourButton(this)">Devour!</button>
+    <br><br>
     {{/each}}
 </ul>
-
-<p>Burger: <input id="input-button" type="text"><br></p>
-<button onclick="buttonFunc()" type="submit" class="btn btn-primary submit">Submit</button>
-
+<p style="margin-left: 70%">Eaten:</p>
+<ul>
+    {{#each eaten}}
+    <li style="margin-left: 70%">{{this}}</li>
+    {{/each}}
+</ul>
 <script>
+    function devourButton(value) {
+        console.log("Button: ", value.id);
+        const buttonInput = {};
+        buttonInput["string"] = value.id;
+        var opts = {
+            method: 'POST',
+            body: JSON.stringify(buttonInput),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+        fetch('/choices/devour', opts).then(function (response) {
+            location.reload();      // essential to refresh the page
+            return response.json();
+        })
+            .then(function (body) {
+                let x = 1;
+            });
+    }
+
     function buttonFunc() {
         const buttonInput = {};
         buttonInput["string"] = document.getElementById("input-button").value;
-        //        console.log("buttonFunc: ", buttonInput);
         var opts = {
             method: 'POST',
             body: JSON.stringify(buttonInput),
@@ -30,6 +69,7 @@
             }
         };
         fetch('/choices/submit', opts).then(function (response) {
+            location.reload();      // essential to refresh the page
             return response.json();
         })
             .then(function (body) {
