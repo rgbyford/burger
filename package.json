@@ -9,7 +9,7 @@
   "dependencies": {
     "express":"*",
     "express-handlebars": "",
-    "mysql": "5.x.x"
+    "mysql": "8.0.13"
   },
   "repository": {
     "type": "git",
