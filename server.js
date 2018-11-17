@@ -18,19 +18,26 @@ var PORT = process.env.PORT || 3000;
 var mysql = require('mysql');
 //var inquirer = require('inquirer');
 
-var con = mysql.createConnection({
-    database: "burgers_db",
-    host: "localhost",
-    user: "root",
-    password: "0921"
-});
+var con;
 
-//console.log (con);
+if (process.env.JAWSDB_URL) {
+    con = mysql.createConnection(process.env.JAWSDB_URL)
+} else {
+    con = mysql.createConnection({
+        database: "burgers_db",
+        host: "localhost",
+        user: "root",
+        password: "0921"
+    });
+
+}
 
 con.connect(function (err) {
     if (err) throw err;
     console.log("connected as id ", con.threadId)
 });
+
+
 
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
@@ -85,11 +92,11 @@ var eatenList = [];
 // });
 
 app.get("/burgers", function (req, res) {
-//    console.log ("get burgers");
+    //    console.log ("get burgers");
     res.render('index', {
         foods: burgerForList,
         eaten: eatenList
-     });
+    });
 });
 
 
@@ -111,8 +118,8 @@ app.post('/burgers/submit', function (req, res) {
         burgerForList.push(req.body.string);
         con.query(`INSERT INTO burgers (burger_name, devoured) VALUES ('${req.body.string}', 0)`, function (err, result) {
             if (err) throw err;
-//            console.log("New one: ", req.body.string);
-//            console.log (burgerForList);
+            //            console.log("New one: ", req.body.string);
+            //            console.log (burgerForList);
             res.render("index", {
                 foods: burgerForList,
                 eaten: eatenList
@@ -120,7 +127,7 @@ app.post('/burgers/submit', function (req, res) {
             return;
         });
     } else {
-//        console.log("Old one: ", req.body.string);
+        //        console.log("Old one: ", req.body.string);
         res.render("index", {
             foods: burgerForList,
             eaten: eatenList
@@ -131,18 +138,18 @@ app.post('/burgers/submit', function (req, res) {
 
 app.post('/burgers/devour', function (req, res) {
     eatenList.push(req.body.string);
-//    console.log(burgerForList);
+    //    console.log(burgerForList);
     let found = burgerForList.indexOf(req.body.string);
     query = con.query(`UPDATE burgers SET devoured = devoured + 1 WHERE burger_name = '${req.body.string}';`,
         function (err, result) {
             if (err) throw err;
         });
-//    console.log("devour found: ", found);
-//    console.log(req.body.string);
+    //    console.log("devour found: ", found);
+    //    console.log(req.body.string);
     if (found >= 0) {
         burgerForList.splice(found, 1);
     }
-//    console.log(burgerForList);
+    //    console.log(burgerForList);
     res.render("index", {
         foods: burgerForList,
         eaten: eatenList

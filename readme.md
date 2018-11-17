@@ -1,6 +1,6 @@
 
 
-Make "devoured" a SMALLINT (instead of a boolean) representing the number eaten.  Will still work with a databse where it's stored as a boolean, because a boolean can be up to 255, and any non-zero value should return true;
+Made "devoured" a SMALLINT (instead of a boolean) representing the number eaten.  Will still work with a databse where it's stored as a boolean, because a boolean can be up to 255, and any non-zero value should return true;
 
 So far:
 
