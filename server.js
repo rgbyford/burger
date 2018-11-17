@@ -91,6 +91,10 @@ var eatenList = [];
 //     //    res.render("index", {});
 // });
 
+app.get ("/", function (req, res) {
+    res.redirect ("/burgers");
+})
+
 app.get("/burgers", function (req, res) {
     //    console.log ("get burgers");
     res.render('index', {
