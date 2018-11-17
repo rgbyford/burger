@@ -31,7 +31,9 @@
     <br><br>
     {{/each}}
 </ul>
+{{#if eaten}}
 <p style="margin-left: 70%">Eaten:</p>
+{{/if}}
 <ul>
     {{#each eaten}}
     <li style="margin-left: 70%">{{this}}</li>
@@ -49,18 +51,15 @@
                 "Content-Type": "application/json"
             }
         };
-        fetch('/choices/devour', opts).then(function (response) {
+        fetch('/burgers/devour', opts).then(function (response) {
             location.reload();      // essential to refresh the page
-            return response.json();
-        })
-            .then(function (body) {
-                let x = 1;
-            });
+          });
     }
 
     function buttonFunc() {
         const buttonInput = {};
         buttonInput["string"] = document.getElementById("input-button").value;
+//        console.log ("submit button");
         var opts = {
             method: 'POST',
             body: JSON.stringify(buttonInput),
@@ -68,9 +67,10 @@
                 "Content-Type": "application/json"
             }
         };
-        fetch('/choices/submit', opts).then(function (response) {
+        fetch('/burgers/submit', opts).then(function (response) {
+//            console.log ("Refreshing page");
             location.reload();      // essential to refresh the page
-            return response.json();
+//            return response.json();
         })
             .then(function (body) {
                 let x = 1;

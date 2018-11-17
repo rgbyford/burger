@@ -31,7 +31,6 @@ con.connect(function (err) {
     if (err) throw err;
     console.log("connected as id ", con.threadId)
 });
-console.log("after connect");
 
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
@@ -55,71 +54,97 @@ app.engine("handlebars", exphbs({
 }));
 app.set("view engine", "handlebars");
 
-app.get("/index", function (req, res) {
-    con.query("SELECT * FROM burgers", function (err, result) {
-        if (err) throw err;
-        let burgerData = [];
-        result.forEach(function (thisOne, i) {
-            burgerData.push(thisOne.burger_name);
-        });
-        console.log("bD: ", burgerData);
-        res.render("index", {
-            eater: "Roger",
-            foods: burgerData
-        });
-    });
-    //    res.render("index", {});
-});
-
-app.get("/burgers", function (req, res) {
-    // the following should be in orm.js, but I had no success putting it there.
-    con.query("SELECT * FROM burgers", function (err, result) {
-        if (err) throw err;
-        let burgerData = [];
-        result.forEach(function (thisOne, i) {
-            burgerData.push(thisOne.burger_name);
-        });
-        console.log(burgerData);
-        res.render("index", {
-            eater: "Roger",
-            foods: burgerData
-        });
-    });
-});
-
 var burgerForList = [];
 var eatenList = [];
 
-app.get("/choices", function (req, res) {
-    console.log("GET request to the choices page");
-    console.log("get: ", burgerForList);
-    res.render("index", {
-        eater: "Roger",
+// the following should be in orm.js, but I had no success putting it there.
+// con.query("SELECT * FROM burgers", function (err, result) {
+//     if (err) throw err;
+//     result.forEach(function (thisOne, i) {
+//         burgerForList.push(thisOne.burger_name);
+//     });
+//     console.log(burgerForList);
+//     res.render("index", {
+//         foods: burgerForList
+//     });
+// });
+
+// app.get("/index", function (req, res) {
+//     console.log ("get index");
+//     con.query("SELECT * FROM burgers", function (err, result) {
+//         if (err) throw err;
+//         result.forEach(function (thisOne, i) {
+//             burgerForList.push(thisOne.burger_name);
+//         });
+//         console.log("bD: ", burgerForList);
+//         res.render("index", {
+//             foods: burgerForList
+//         });
+//     });
+//     //    res.render("index", {});
+// });
+
+app.get("/burgers", function (req, res) {
+//    console.log ("get burgers");
+    res.render('index', {
         foods: burgerForList,
         eaten: eatenList
-    });
-    console.log(burgerForList);
+     });
 });
 
 
-app.post('/choices/submit', function (req, res) {
-    burgerForList.push(req.body.string);
-    res.render("index", {
-        foods: burgerForList,
-        eaten: eatenList
-    });
-    return;
+// app.get("/choices", function (req, res) {
+//     console.log("GET request to the choices page");
+//     console.log("get: ", burgerForList);
+//     res.render("index", {
+//         foods: burgerForList,
+//         eaten: eatenList
+//     });
+//     console.log(burgerForList);
+// });
+
+
+app.post('/burgers/submit', function (req, res) {
+    let foundIndex = burgerForList.indexOf(req.body.string);
+    if (foundIndex < 0) {
+        // don't have this one
+        burgerForList.push(req.body.string);
+        con.query(`INSERT INTO burgers (burger_name, devoured) VALUES ('${req.body.string}', 0)`, function (err, result) {
+            if (err) throw err;
+//            console.log("New one: ", req.body.string);
+//            console.log (burgerForList);
+            res.render("index", {
+                foods: burgerForList,
+                eaten: eatenList
+            });
+            return;
+        });
+    } else {
+//        console.log("Old one: ", req.body.string);
+        res.render("index", {
+            foods: burgerForList,
+            eaten: eatenList
+        });
+        return;
+    }
 });
 
-app.post('/choices/devour', function (req, res) {
+app.post('/burgers/devour', function (req, res) {
     eatenList.push(req.body.string);
-    let found = burgerForList.indexOf (req.body.string);
+//    console.log(burgerForList);
+    let found = burgerForList.indexOf(req.body.string);
+    query = con.query(`UPDATE burgers SET devoured = devoured + 1 WHERE burger_name = '${req.body.string}';`,
+        function (err, result) {
+            if (err) throw err;
+        });
+//    console.log("devour found: ", found);
+//    console.log(req.body.string);
     if (found >= 0) {
         burgerForList.splice(found, 1);
     }
+//    console.log(burgerForList);
     res.render("index", {
         foods: burgerForList,
         eaten: eatenList
     });
-    return;
 });
