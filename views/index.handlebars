@@ -21,7 +21,7 @@
 <div class="middle">
     <p>What would you like?</p>
     <input id="input-button" type="text"><br><br>
-    <button onclick="buttonFunc()" class="btn btn-primary submit">Submit</button>
+    <button onclick="submitButton()" class="btn btn-primary submit">Submit</button>
 </div>
 
 <ul>
@@ -32,7 +32,7 @@
     {{/each}}
 </ul>
 {{#if eaten}}
-<p style="margin-left: 70%">Eaten:</p>
+<h3 style="margin-left: 70%">Eaten:</h3>
 {{/if}}
 <ul>
     {{#each eaten}}
@@ -41,7 +41,6 @@
 </ul>
 <script>
     function devourButton(value) {
-        console.log("Button: ", value.id);
         const buttonInput = {};
         buttonInput["string"] = value.id;
         var opts = {
@@ -56,10 +55,9 @@
           });
     }
 
-    function buttonFunc() {
+    function submitButton() {
         const buttonInput = {};
         buttonInput["string"] = document.getElementById("input-button").value;
-//        console.log ("submit button");
         var opts = {
             method: 'POST',
             body: JSON.stringify(buttonInput),
@@ -68,12 +66,7 @@
             }
         };
         fetch('/burgers/submit', opts).then(function (response) {
-//            console.log ("Refreshing page");
             location.reload();      // essential to refresh the page
-//            return response.json();
         })
-            .then(function (body) {
-                let x = 1;
-            });
     }
 </script>

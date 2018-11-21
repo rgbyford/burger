@@ -1,24 +1,20 @@
-module.exports = async function (app) {
-    // connection to mysql
-    var mysql = require('mysql');
-    //var inquirer = require('inquirer');
-
-    console.log ("connection.js");
-
-    var con = mysql.createConnection({
+ var mysql = require('mysql');
+ 
+if (process.env.JAWSDB_URL) {
+    con = mysql.createConnection(process.env.JAWSDB_URL)
+} else {
+    con = mysql.createConnection({
         database: "burgers_db",
         host: "localhost",
         user: "root",
         password: "0921"
     });
-
-    //console.log (con);
-
-    await con.connect(function (err) {
-        if (err) throw err;
-        console.log("connected as id ", con.threadId)
-    });
-    console.log ("after connect");
-    return (con);
-
 }
+
+con.connect(function (err) {
+     if (err) throw err;
+     console.log("connected as id ", con.threadId)
+     return;
+ });
+
+ module.exports = con;
