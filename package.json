@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "dependencies": {
-    "express":"*",
+    "express": "*",
     "express-handlebars": "",
     "mysql": ""
   },
@@ -21,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/rgbyford/burger/issues"
   },
-  "homepage": "https://github.com/rgbyford/burger#readme"
+  "homepage": "https://github.com/rgbyford/burger#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
 }
